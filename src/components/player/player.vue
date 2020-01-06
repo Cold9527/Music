@@ -76,7 +76,8 @@
                :src='currentSong.url'
                @canplay="ready"
                @error="error"
-               @timeupdate="updateTime"></audio>
+               @timeupdate="updateTime"
+               @ended="end"></audio>
     </div>
 </template>
 
@@ -216,6 +217,17 @@ export default {
            this.togglePlaying()
          }
          this.songReady = false
+       },
+       loop(){
+         this.$refs.audio.currentTime = 0
+         this.$refs.audio.play()
+       },
+       end(){
+         if(this.mode === playMode.loop){
+           this.loop()
+         }else{
+           this.next()
+         }
        },
        ready(){
          this.songReady = true

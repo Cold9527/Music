@@ -24,6 +24,21 @@
                         </div>
                     </div>
                 </div>
+                <Scroll class='middle-r' 
+                        ref='lyricList' 
+                        :data='currentLyric && currentLyric.lines'>
+                    <div class='lyric-wrapper'>
+                        <div v-if="currentLyric">
+                            <p ref='lyricLine'
+                               class='text'
+                               :class = "{'current':currentLineNum === index}"
+                               v-for="(line,index) in currentLyric.lines" 
+                               :key='line.index'>
+                               {{line.txt}}
+                            </p>
+                        </div>
+                    </div>                  
+                </Scroll>
             </div>
             <div class='bottom'>
                 <div class='progress-wrapper'>
@@ -89,6 +104,8 @@ import ProgressBar from 'base/progress-bar/progress-bar'
 import ProgressCircle from 'base/progress-circle/progress-circle'
 import {playMode} from 'common/js/config'
 import {shunffle} from 'common/js/util'
+import Lyric from 'lyric-parser'
+import Scroll from 'base/srcoll/srcoll'
 
 const transform = prefixStyle('transform')
 export default {
@@ -97,12 +114,15 @@ export default {
       return {
         songReady:false,
         currentTime:0,
-        radius:32
+        radius:32,
+        currentLyric:null,
+        currentLineNum:0
       }
    },
    components:{
       ProgressBar,
-      ProgressCircle
+      ProgressCircle,
+      Scroll
    },
    computed:{
        cdCls(){
@@ -256,6 +276,24 @@ export default {
          this._resetCurrentIndex(list)
          this.setplaylist(list)
        },
+       getLyric(){
+         this.currentSong.getLyric().then((lyric) => {
+           this.currentLyric = new Lyric(lyric,this.handleLyric)
+           if(this.playing){
+             this.currentLyric.play()
+           }          
+           console.log(this.currentLyric)
+         })
+       },
+       handleLyric({lineNum, txt}){
+         this.currentLineNum = lineNum
+         if(lineNum > 5){
+           let lineEL = this.$refs.lyricLine[lineNum - 5]
+           this.$refs.lyricList.scrollToElement(lineEL, 1000)
+         }else{
+           this.$refs.lyricList.scrollTo(0,0,1000)
+         }
+       },
        _resetCurrentIndex(list){
          let index = list.findIndex((item) => {
            return item.id === this.currentSong.id
@@ -301,7 +339,7 @@ export default {
            }
            this.$nextTick(()=>{
                 this.$refs.audio.play();
-                this.currentSong.getLyric()
+                this.getLyric()
            })
        },
        playing(newPlaying){

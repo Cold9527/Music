@@ -15,7 +15,7 @@
               <div class="recommend-list">
                   <h1 class="list-title">热门歌单推荐</h1>
                   <ul>
-                    <li v-for='item of discList' :key='item.index' class='item'>
+                    <li @click='selectItem(item)' v-for='item of discList' :key='item.index' class='item'>
                       <div class="icon">
                         <img v-lazy="item.imgurl" width="60" height="60"/>
                       </div>
@@ -31,6 +31,9 @@
             <Loading></Loading>
           </div>
        </srcoll> 
+       <transition name='slide'>
+          <router-view/>
+       </transition>
     </div>
 </template>
 
@@ -41,6 +44,9 @@ import slider from "base/slider/slider"
 import {getRecommend, getDiscList} from 'api/recommend'
 import {ERR_OK} from 'api/config'
 import {playlistMixin} from 'common/js/mixin'
+import {mapMutations} from 'vuex'
+
+
 export default {
    mixins:[playlistMixin],
    name:'Recommend',
@@ -82,11 +88,20 @@ export default {
           this.checkLoaded = true
         }       
       },
+      selectItem(item){
+        this.$router.push({
+          path:`/recommend/${item.dissid}`
+        })
+        this.setDsic(item)
+      },
       handlePlaylist(playlist){
           const bottom = playlist.length > 0 ? '60px' : ''
           this.$refs.recommend.style.bottom = bottom
           this.$refs.scroll.refresh()
-      }
+      },
+      ...mapMutations({
+          setDsic : 'SET_DSIC'
+      })
    }
 
 }
@@ -141,4 +156,8 @@ export default {
         width: 100%
         top: 50%
         transform: translateY(-50%)
+  .slide-enter-active, .slide-leave-active
+      transition: all 0.3s
+  .slide-enter, .slide-leave-to
+      transform:translate3d(100%, 0, 0)       
 </style>

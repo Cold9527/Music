@@ -6,6 +6,7 @@ import Recommend from 'components/recommend/recommend.vue'
 import Search from 'components/search/search.vue'
 import Singer from 'components/singer/singer.vue'
 import SingerDetail from 'components/singer-detail/singer-detail.vue'
+import Dsic from 'components/dsic/dsic.vue'
 
 Vue.use(VueRouter)
 
@@ -22,7 +23,14 @@ const routes = [
   {
     path: '/recommend',
     name: 'Recommend',
-    component: () => import(/* webpackChunkName: "about" */ 'components/recommend/recommend.vue')
+    component: () => import(/* webpackChunkName: "about" */ 'components/recommend/recommend.vue'),
+    children: [
+      {
+        path:':id',
+        name:'Dsic',
+        component: () => import(/* webpackChunkName: "about" */ 'components/dsic/dsic')
+      }
+    ]
   },
   {
     path: '/search',

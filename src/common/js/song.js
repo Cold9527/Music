@@ -46,6 +46,20 @@ export function createSong(musicData, vkey){
 
 }
 
+export function createDsic(DsicList, vkey){
+    return new Song({
+        id: DsicList.id,
+        mid:DsicList.mid,
+        singer:filterSinger(DsicList.singer),
+        name:DsicList.name,
+        album:DsicList.album.name,
+        duration:DsicList.interval,
+        image:`https://y.gtimg.cn/music/photo_new/T002R300x300M000${DsicList.album.mid}.jpg?max_age=2592000`,
+        url: `http://aqqmusic.tc.qq.com/amobile.music.tc.qq.com/${vkey}`               
+    })
+
+}
+
 
 function filterSinger(singer){
     let ret = []

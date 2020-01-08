@@ -33,10 +33,12 @@ export default {
    },
    methods:{
        _getSongList(){
+           if(!this.dsic.dissid){
+               this.$router.back()
+           }
            getSongList(this.dsic.dissid).then((res) => {
                if(res.code === ERR_OK){
                    this.songs = this._normalizeSongs(res.cdlist[0].songlist)
-                   console.log(res.cdlist[0].songlist)
                }
            })
        },

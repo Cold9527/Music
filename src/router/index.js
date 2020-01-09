@@ -7,6 +7,7 @@ import Search from 'components/search/search.vue'
 import Singer from 'components/singer/singer.vue'
 import SingerDetail from 'components/singer-detail/singer-detail.vue'
 import Dsic from 'components/dsic/dsic.vue'
+import TopList from 'components/top-list/top-list.vue'
 
 Vue.use(VueRouter)
 
@@ -18,7 +19,13 @@ const routes = [
   {
     path: '/rank',
     name: 'Rank',
-    component: () => import(/* webpackChunkName: "about" */ 'components/rank/rank.vue')
+    component: () => import(/* webpackChunkName: "about" */ 'components/rank/rank.vue'),
+    children:[
+      {
+        path:':id',
+        component: TopList
+      }
+    ]
   },
   {
     path: '/recommend',
@@ -28,7 +35,7 @@ const routes = [
       {
         path:':id',
         name:'Dsic',
-        component: () => import(/* webpackChunkName: "about" */ 'components/dsic/dsic')
+        component:Dsic
       }
     ]
   },

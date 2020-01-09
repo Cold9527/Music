@@ -10,6 +10,9 @@ const state = {
     currentIndex:-1,
     dsic:{
         
+    },
+    topList:{
+
     }
 
 }

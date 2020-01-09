@@ -17,3 +17,5 @@ export const currentSong = (state) => {
 }
 
 export const dsic = state => state.dsic
+
+export const topList = state => state.topList

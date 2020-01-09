@@ -24,7 +24,10 @@ const mutations = {
     },
     [types.SET_DSIC](state,dsic){
         state.dsic = dsic
-    }         
+    },
+    [types.SET_TOPLIST](state,topList){
+        state.topList = topList
+    }    
 
 }
 

@@ -1,12 +1,12 @@
 <template>
     <div class='suggest'>
         <ul class='suggest-list'>
-            <li class='suggest-item'>
+            <li class='suggest-item' v-for="item of result" :key="item.index">
                 <div class='icon'>
-                    <i></i>
+                    <i :class='getIconCls(item)'></i>
                 </div>
                 <div class='name'>
-                    <p class='text'></p>
+                    <p class='text' v-html='getDisplayName(item)'></p>
                 </div>
             </li>
         </ul>
@@ -14,21 +14,61 @@
 </template>
 
 <script>
+import {search} from 'api/search'
+import {ERR_OK} from 'api/config'
+import {filterSinger} from 'common/js/song'
+
+const TYPE_SINGER = 'singer'
+const perpage = 20
 export default {
    name:'',
    props:{
        query:{
            type:String,
            default:''
+       },
+       showSinger:{
+           type:Boolean,
+           default:true
        }
    },
    data() {
       return {
+          page:1,
+          result:[]
       }
    },
    methods:{
        search(){
-           
+           search(this.query, this.page, this.showSinger, perpage).then((res)=>{
+               if(res.code === ERR_OK){
+                   this.result = this._getResult(res.data);
+               }
+           })
+       },
+       getIconCls(item){
+           if(item.type === TYPE_SINGER){
+               return 'icon-mine'
+           }else{
+                return 'icon-music'
+           }
+       },
+       getDisplayName(item){
+           if(item.type === TYPE_SINGER){
+               return item.singername
+           }else{
+               return `${item.songname}-${filterSinger(item.singer)}`
+           }
+       },
+       _getResult(data){
+           let ret = []
+           if(data.zhida && data.zhida.singerid){
+               ret.push({...data.zhida, ...{type:TYPE_SINGER}})
+           }
+           if(data.song){
+               ret = ret.concat(data.song.list)
+           }
+           return ret
        }
    },
    watch:{

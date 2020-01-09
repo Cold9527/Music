@@ -5,27 +5,14 @@
             @scrollToEnd = 'searchMore'
             ref='suggest'>
         <ul class='suggest-list'>
-<<<<<<< HEAD
-<<<<<<< HEAD
-            <li class='suggest-item'>
-                <div class='icon'>
-                    <i></i>
-                </div>
-                <div class='name'>
-                    <p class='text'></p>
-=======
-            <li class='suggest-item' v-for="item of result" :key="item.index">
-=======
             <li class='suggest-item' 
                 v-for="item of result" 
                 :key="item.index">
->>>>>>> search
                 <div class='icon'>
                     <i :class='getIconCls(item)'></i>
                 </div>
                 <div class='name'>
                     <p class='text' v-html='getDisplayName(item)'></p>
->>>>>>> search
                 </div>
             </li>
             <loading v-show = 'hasMore' title=''></loading>
@@ -35,14 +22,6 @@
 </template>
 
 <script>
-<<<<<<< HEAD
-export default {
-   name:'',
-   data() {
-      return {
-      }
-   },
-=======
 import {search} from 'api/search'
 import {ERR_OK} from 'api/config'
 import {createSong} from 'common/js/song'
@@ -153,7 +132,6 @@ export default {
        Scroll,
        loading
    }
->>>>>>> search
 
 }
 </script>

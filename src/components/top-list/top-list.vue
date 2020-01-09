@@ -1,5 +1,5 @@
 <template>
-        <music-list :songs='songs' :title='title' :bgImage = 'bgImage'></music-list>
+        <music-list :rank='rank' :songs='songs' :title='title' :bgImage ='bgImage'></music-list>
 </template>
 
 <script>
@@ -14,6 +14,7 @@ export default {
    data() {
       return {
           songs:[],
+          rank:true
       }
    },
    computed:{
@@ -21,7 +22,11 @@ export default {
         return this.topList.topTitle 
        },
        bgImage(){
-        return this.topList.picUrl 
+        if(this.songs.length){
+            return this.songs[0].image
+        }else{
+            return this.topList.picUrl 
+        }        
        },
        ...mapGetters([
            'topList'

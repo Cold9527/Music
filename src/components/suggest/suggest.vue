@@ -7,7 +7,8 @@
         <ul class='suggest-list'>
             <li class='suggest-item' 
                 v-for="item of result" 
-                :key="item.index">
+                :key="item.index"
+                @click="selectItem(item)">
                 <div class='icon'>
                     <i :class='getIconCls(item)'></i>
                 </div>
@@ -28,6 +29,8 @@ import {createSong} from 'common/js/song'
 import {getSongVkey} from 'api/singer'
 import Scroll from 'base/srcoll/srcoll'
 import loading from 'base/loading/loading'
+import Singer from 'common/js/singer'
+import { mapMutations } from 'vuex'
 
 const TYPE_SINGER = 'singer'
 const perpage = 20
@@ -53,6 +56,18 @@ export default {
       }
    },
    methods:{
+       selectItem(item){
+           if(item.type === TYPE_SINGER){
+               const singer = new Singer({
+                   id:item.singermid,
+                   name:item.singername
+               })
+               this.$router.push({
+                   path:`/search/${singer.id}`,
+               })
+               this.setSinger(singer)  
+           }
+       },
        search(){
            this.page = 1
            this.hasMore = true
@@ -95,7 +110,6 @@ export default {
            if(!song.list.length || (song.curnum + song.curpage * perpage) >= song.totalnum){
                this.hasMore = false
            }
-           console.log((song.curnum + song.curpage * perpage) >= song.totalnum)
        },
        _getResult(data){
             let ret = []
@@ -121,7 +135,10 @@ export default {
                 }               
             })
             return ret
-       }
+       },
+       ...mapMutations({
+           setSinger:'SET_SINGER'
+       })
    },
    watch:{
        query(){

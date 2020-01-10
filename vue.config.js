@@ -10,6 +10,7 @@ app.use('/api', apiRoutes)
 
 module.exports = {
     lintOnSave: true,
+    publicPath: "./",
     chainWebpack: (config)=>{
         config.resolve.alias
             .set('@', resolve('src'))
@@ -18,6 +19,7 @@ module.exports = {
             .set('api',resolve('src/api'))
             .set('base',resolve('src/base'))
     },
+
     devServer: { 
     before(app) {
         app.get('/api/getTopBanner', function (req, res) {

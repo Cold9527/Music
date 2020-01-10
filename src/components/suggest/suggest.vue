@@ -95,7 +95,6 @@ export default {
            if(!song.list.length || (song.curnum + song.curpage * perpage) >= song.totalnum){
                this.hasMore = false
            }
-           console.log((song.curnum + song.curpage * perpage) >= song.totalnum)
        },
        _getResult(data){
             let ret = []

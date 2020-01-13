@@ -33,7 +33,7 @@ import Singer from 'common/js/singer'
 import { mapMutations, mapActions } from 'vuex'
 
 const TYPE_SINGER = 'singer'
-const perpage = 20
+const perpage = 1000
 export default {
    name:'',
    props:{
@@ -52,7 +52,6 @@ export default {
           result:[],
           pullup:true,
           hasMore:true,
-          vkey:[]
       }
    },
    methods:{
@@ -76,7 +75,7 @@ export default {
            this.$refs.suggest.scrollTo(0,0)
            search(this.query, this.page, this.showSinger, perpage).then((res)=>{
                if(res.code === ERR_OK){
-                    this.result = this._getResult(res.data)
+                    this.result = this._normalizeSongs(res.data.song.list)
                     this._checkMore(res.data)
                }
            })
@@ -88,8 +87,8 @@ export default {
            this.page++
            search(this.query, this.page, this.showSinger, perpage).then(res =>{
                if(res.code === ERR_OK){
-                   this.result =this.result.concat( this._getResult(res.data))
-                   this._checkMore(res.data)
+                    this.result = this.result.concat(this._normalizeSongs(res.data.song.list))           
+                    this._checkMore(res.data)
                }             
            })
        },
@@ -113,22 +112,25 @@ export default {
                this.hasMore = false
            }
        },
-       _getResult(data){
-            let ret = []
-            if (data.zhida && data.zhida.singerid) {
-                ret.push({...data.zhida, ...{type: TYPE_SINGER}})
-            }            
-            if (data.song) {
-                ret = ret.concat(this._normalizeSongs(data.song.list)) 
-            }            
-            return ret
-       },
+    //    _getResult(data){
+    //         let ret = []
+    //         if (data.zhida && data.zhida.singerid) {
+    //             ret.push({...data.zhida, ...{type: TYPE_SINGER}})
+    //         }            
+    //         if (data.song) {
+    //             ret = ret.concat(this._normalizeSongs(data.song.list)) 
+    //         }            
+    //         return ret
+    //    },
        _normalizeSongs(list){
             let ret = []
             list.forEach((songlist) => {                           
-                if (songlist.songid && songlist.albummid) {                         
-                    ret.push(createSong(songlist, this.vkey))
-                }                
+                getSongVkey(songlist.songmid).then((res) => {
+                    const vkey = res.req_0.data.midurlinfo[0].purl;
+                    if(vkey){
+                        ret.push(createSong(songlist, vkey))   
+                    }   
+                })            
             })
             return ret
       },    

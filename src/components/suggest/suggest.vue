@@ -3,7 +3,9 @@
             :data='result' 
             :pullup = 'pullup'
             @scrollToEnd = 'searchMore'
-            ref='suggest'>
+            :beforeScroll = 'beforeScroll'
+            ref='suggest'
+            @beforeScroll = 'listScroll'>
         <ul class='suggest-list'>
             <li class='suggest-item' 
                 v-for="item of result" 
@@ -19,6 +21,9 @@
             <loading v-show = 'hasMore' title=''></loading>
             <!-- <div v-show ='!hasMore'>没有更多了</div> -->
         </ul>
+        <div class='no-result-wrapper' v-show='!hasMore && !result.length'>
+            <no-result title="抱歉，暂无搜索结果"></no-result>
+        </div>
     </Scroll>
 </template>
 
@@ -30,10 +35,11 @@ import {getSongVkey} from 'api/singer'
 import Scroll from 'base/srcoll/srcoll'
 import loading from 'base/loading/loading'
 import Singer from 'common/js/singer'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapActions } from 'vuex'
+import NoResult from 'base/no-result/no-result'
 
 const TYPE_SINGER = 'singer'
-const perpage = 20
+const perpage = 1000
 export default {
    name:'',
    props:{
@@ -50,9 +56,9 @@ export default {
       return {
           page:1,
           result:[],
-          vkey:[],
           pullup:true,
-          hasMore:true
+          hasMore:true,
+          beforeScroll:true
       }
    },
    methods:{
@@ -66,6 +72,8 @@ export default {
                    path:`/search/${singer.id}`,
                })
                this.setSinger(singer)  
+           }else{
+               this.insertSong(item)
            }
        },
        search(){
@@ -74,8 +82,8 @@ export default {
            this.$refs.suggest.scrollTo(0,0)
            search(this.query, this.page, this.showSinger, perpage).then((res)=>{
                if(res.code === ERR_OK){
-                   this.result = this._getResult(res.data);
-                   this._checkMore(res.data)
+                    this.result = this._normalizeSongs(res.data.song.list)
+                    this._checkMore(res.data)
                }
            })
        },
@@ -86,10 +94,13 @@ export default {
            this.page++
            search(this.query, this.page, this.showSinger, perpage).then(res =>{
                if(res.code === ERR_OK){
-                   this.result =this.result.concat( this._getResult(res.data))
-                   this._checkMore(res.data)
+                    this.result = this.result.concat(this._normalizeSongs(res.data.song.list))           
+                    this._checkMore(res.data)
                }             
            })
+       },
+       listScroll(){
+           this.$emit("listScroll")
        },
        getIconCls(item){
            if(item.type === TYPE_SINGER){
@@ -111,34 +122,35 @@ export default {
                this.hasMore = false
            }
        },
-       _getResult(data){
-            let ret = []
-            if (data.zhida && data.zhida.singerid) {
-                ret.push({...data.zhida, ...{type: TYPE_SINGER}})
-            }
-            if (data.song) {
-                ret = ret.concat(this._normalizeSongs(data.song.list))
-            }
-            return ret
-       },
+    //    _getResult(data){
+    //         let ret = []
+    //         if (data.zhida && data.zhida.singerid) {
+    //             ret.push({...data.zhida, ...{type: TYPE_SINGER}})
+    //         }            
+    //         if (data.song) {
+    //             ret = ret.concat(this._normalizeSongs(data.song.list)) 
+    //         }            
+    //         return ret
+    //    },
        _normalizeSongs(list){
             let ret = []
-            list.forEach((musicData) => {
-                if (musicData.songid && musicData.albummid) {
-                    getSongVkey(musicData.songmid).then((res) => {
-                        this.vkey = res.req_0.data.midurlinfo[0].purl; 
-                    })
-                    if(this.vkey){
-                         ret.push(createSong(musicData, this.vkey))   
-                    }
-                    
-                }               
+            list.forEach((songlist) => {                           
+                getSongVkey(songlist.songmid).then((res) => {
+                    const vkey = res.req_0.data.midurlinfo[0].purl;
+                    if(vkey){
+                        ret.push(createSong(songlist, vkey))   
+                    }   
+                })            
             })
             return ret
-       },
+      },    
+      
        ...mapMutations({
            setSinger:'SET_SINGER'
-       })
+       }),
+       ...mapActions([
+           'insertSong'
+       ])
    },
    watch:{
        query(){
@@ -147,7 +159,8 @@ export default {
    },
    components:{
        Scroll,
-       loading
+       loading,
+       NoResult
    }
 
 }

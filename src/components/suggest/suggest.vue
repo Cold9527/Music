@@ -3,7 +3,9 @@
             :data='result' 
             :pullup = 'pullup'
             @scrollToEnd = 'searchMore'
-            ref='suggest'>
+            :beforeScroll = 'beforeScroll'
+            ref='suggest'
+            @beforeScroll = 'listScroll'>
         <ul class='suggest-list'>
             <li class='suggest-item' 
                 v-for="item of result" 
@@ -19,6 +21,9 @@
             <loading v-show = 'hasMore' title=''></loading>
             <!-- <div v-show ='!hasMore'>没有更多了</div> -->
         </ul>
+        <div class='no-result-wrapper' v-show='!hasMore && !result.length'>
+            <no-result title="抱歉，暂无搜索结果"></no-result>
+        </div>
     </Scroll>
 </template>
 
@@ -31,6 +36,7 @@ import Scroll from 'base/srcoll/srcoll'
 import loading from 'base/loading/loading'
 import Singer from 'common/js/singer'
 import { mapMutations, mapActions } from 'vuex'
+import NoResult from 'base/no-result/no-result'
 
 const TYPE_SINGER = 'singer'
 const perpage = 1000
@@ -52,6 +58,7 @@ export default {
           result:[],
           pullup:true,
           hasMore:true,
+          beforeScroll:true
       }
    },
    methods:{
@@ -91,6 +98,9 @@ export default {
                     this._checkMore(res.data)
                }             
            })
+       },
+       listScroll(){
+           this.$emit("listScroll")
        },
        getIconCls(item){
            if(item.type === TYPE_SINGER){
@@ -149,7 +159,8 @@ export default {
    },
    components:{
        Scroll,
-       loading
+       loading,
+       NoResult
    }
 
 }

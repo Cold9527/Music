@@ -97,6 +97,7 @@
             </div>            
         </div>
         </transition>
+        <playlist></playlist>
         <audio ref='audio' 
                :src='currentSong.url'
                @canplay="ready"
@@ -116,6 +117,7 @@ import {playMode} from 'common/js/config'
 import {shunffle} from 'common/js/util'
 import Lyric from 'lyric-parser'
 import Scroll from 'base/srcoll/srcoll'
+import playlist from 'components/playlist/playlist'
 
 const transform = prefixStyle('transform')
 const transitionDuration = prefixStyle('transitionDuration')
@@ -136,7 +138,8 @@ export default {
    components:{
       ProgressBar,
       ProgressCircle,
-      Scroll
+      Scroll,
+      playlist
    },
    computed:{
        cdCls(){

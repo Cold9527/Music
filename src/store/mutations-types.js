@@ -15,3 +15,5 @@ export const SET_CURRENT_INDEX = 'SET_CURRENT_INDEX';
 export const SET_DSIC = 'SET_DSIC';
 
 export const SET_TOPLIST = 'SET_TOPLIST';
+
+export const SET_SEARCH_HISTORY = 'SET_SEARCH_HISTORY'; 

@@ -75,6 +75,8 @@ export default {
            }else{
                this.insertSong(item)
            }
+           
+           this.$emit('select')
        },
        search(){
            this.page = 1

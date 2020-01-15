@@ -92,12 +92,12 @@
                     <i @click.stop = 'togglePlaying' class='icon-mini' :class="miniIcon"></i>
                 </progress-circle>
             </div>
-            <div class='control'>
+            <div class='control' @click.stop='showPlaylist'>
                 <i class='icon-playlist'></i>    
             </div>            
         </div>
         </transition>
-        <playlist></playlist>
+        <playlist ref='playlist'></playlist>
         <audio ref='audio' 
                :src='currentSong.url'
                @canplay="ready"
@@ -247,6 +247,7 @@ export default {
          }  
          if(this.playlist.length ===1 ){
             this.loop()
+            return
          }else{
             let index = this.currentIndex - 1
             if(index === -1){
@@ -296,6 +297,9 @@ export default {
        },
        error(){
          this.songReady = true   
+       },
+       showPlaylist(){
+         this.$refs.playlist.show()
        },
        updateTime(e){
          this.currentTime = e.target.currentTime

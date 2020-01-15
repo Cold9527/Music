@@ -1,7 +1,7 @@
 <template>
     <transition name='list-fade'>
-        <div class='playlist'>
-            <div class='list-wrapper'>
+        <div class='playlist' v-show='showFlag' @click="hide">
+            <div class='list-wrapper' @click.stop>
                 <div class='list-header'>
                     <h1 class='title'>
                         <i class='icon'></i>
@@ -9,27 +9,31 @@
                         <span class='clear'><i class='icon-clear'></i></span>
                     </h1>
                 </div>
-                <div class='list-content'>
+                <srcoll ref = 'listcontent' class='list-content' :data='sequenceList'>
                     <ul>
-                        <li class='item'>
-                            <i class='current'></i>
-                            <span class='text'></span>
+                        <li class='item' 
+                            v-for='(item, index) of sequenceList' 
+                            :key="index"
+                            @click='selectItem(item,index)'
+                            ref='listItem'>
+                            <i class='current' :class='getCurrentIcon(item)'></i>
+                            <span class='text'>{{item.name}}</span>
                             <span class='like'>
                                 <i class='icon-not-favorite'></i>
                             </span>
-                            <span class='detele'>
+                            <span class='detele' @click.stop='deleteOne(item)'>
                                 <i class='icon-delete'></i>
                             </span>
                         </li>
                     </ul>
-                </div>
+                </srcoll>
                 <div class='list-operate'>
                     <div class='add'>
                         <i class='icon-add'></i>
                         <span class='text'>添加歌曲到列表</span>
                     </div>
                 </div>
-                <div class='list-close'>
+                <div class='list-close' @click="hide">
                     <span>关闭</span>
                 </div>
             </div>
@@ -38,12 +42,79 @@
 </template>
 
 <script>
+import {mapGetters, mapMutations,mapActions} from 'vuex'
+import srcoll from 'base/srcoll/srcoll'
+import {playMode} from 'common/js/config'
+
 export default {
    name:'',
    data() {
       return {
+        showFlag:false
       }
    },
+   computed:{
+     ...mapGetters([
+        'sequenceList',
+        'currentSong',
+        'playlist',
+        'mode'
+     ])                
+   },
+   methods:{
+     show(){
+       this.showFlag = true
+       setTimeout(() => {
+         this.$refs.listcontent.refresh()
+         this.scrollToCurrent(this.currentSong)
+       },20)
+     },
+     hide(){
+        this.showFlag = false
+     },
+     selectItem(item, index){
+       if(this.mode === playMode.random){
+         index = this.playlist.findIndex((song)=>{
+           return song.id === item.id
+         })
+       }
+        this.setCurrentIndex(index)
+     },
+     scrollToCurrent(current){
+         const index = this.sequenceList.findIndex((song)=>{
+         return current.id === song.id
+       })
+       this.$refs.listcontent.scrollToElement(this.$refs.listItem[index], 300)
+     },
+     getCurrentIcon(item){
+       if(this.currentSong.id === item.id){
+         return 'icon-play'
+       }
+       return ''
+     },
+     deleteOne(item){
+       this.deleteSong(item)
+     },
+     ...mapMutations({
+       setCurrentIndex:'SET_CURRENT_INDEX',
+     }),
+     ...mapActions([
+       'deleteSong'
+     ])
+   },
+   watch:{
+      currentSong(newSong, oldSong) {
+        if (!this.showFlag || newSong.id === oldSong.id) {
+          return
+        }
+        setTimeout(() => {
+          this.scrollToCurrent(newSong)
+        }, 20)
+      }
+   },
+   components:{
+     srcoll,
+   }
 
 }
 </script>

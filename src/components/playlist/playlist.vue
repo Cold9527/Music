@@ -6,7 +6,7 @@
                     <h1 class='title'>
                         <i class='icon'></i>
                         <span class='text'></span>
-                        <span class='clear'><i class='icon-clear'></i></span>
+                        <span class='clear' @click='showConfirm'><i class='icon-clear'></i></span>
                     </h1>
                 </div>
                 <srcoll ref = 'listcontent' class='list-content' :data='sequenceList'>
@@ -37,6 +37,7 @@
                     <span>关闭</span>
                 </div>
             </div>
+            <confirm ref='confirm' @confirm = 'confirmClear' text='是否清空播放列表' confirmBtnText='清空'></confirm>
         </div>
     </transition>
 </template>
@@ -45,6 +46,7 @@
 import {mapGetters, mapMutations,mapActions} from 'vuex'
 import srcoll from 'base/srcoll/srcoll'
 import {playMode} from 'common/js/config'
+import confirm from 'base/confirm/confirm'
 
 export default {
    name:'',
@@ -98,11 +100,19 @@ export default {
          this.hide()
        }
      },
+     showConfirm(){
+       this.$refs.confirm.show() 
+     },
+     confirmClear(){
+       this.deleteSongList()
+       this.hide()
+     },
      ...mapMutations({
        setCurrentIndex:'SET_CURRENT_INDEX',
      }),
      ...mapActions([
-       'deleteSong'
+       'deleteSong',
+       'deleteSongList'
      ])
    },
    watch:{
@@ -117,6 +127,7 @@ export default {
    },
    components:{
      srcoll,
+     confirm
    }
 
 }

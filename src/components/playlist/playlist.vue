@@ -10,10 +10,10 @@
                     </h1>
                 </div>
                 <srcoll ref = 'listcontent' class='list-content' :data='sequenceList'>
-                    <ul>
+                    <transition-group name='list' tag="ul">
                         <li class='item' 
                             v-for='(item, index) of sequenceList' 
-                            :key="index"
+                            :key="item.id"
                             @click='selectItem(item,index)'
                             ref='listItem'>
                             <i class='current' :class='getCurrentIcon(item)'></i>
@@ -25,7 +25,7 @@
                                 <i class='icon-delete'></i>
                             </span>
                         </li>
-                    </ul>
+                    </transition-group>
                 </srcoll>
                 <div class='list-operate'>
                     <div class='add'>
@@ -94,6 +94,9 @@ export default {
      },
      deleteOne(item){
        this.deleteSong(item)
+       if(!this.playlist.length){
+         this.hide()
+       }
      },
      ...mapMutations({
        setCurrentIndex:'SET_CURRENT_INDEX',

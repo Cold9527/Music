@@ -245,7 +245,7 @@ export default {
          if(!this.songReady){
            return
          }  
-         if(this.playlist.length ===1 ){
+         if(this.playlist.length === 1 ){
             this.loop()
             return
          }else{
@@ -444,11 +444,14 @@ export default {
    },
    watch:{
        currentSong(newSong, oldSong){
+           if(!newSong.id){
+              return
+            }
            if(newSong.id === oldSong.id){
               return
            }
            if(this.currentLyric){
-             this.currentLyric.stop()
+              this.currentLyric.stop()    
            }
            setTimeout(() => {
               this.$refs.audio.play();

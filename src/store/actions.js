@@ -1,7 +1,7 @@
 import * as types from './mutations-types'
 import {playMode} from 'common/js/config'
 import {shunffle} from 'common/js/util'
-import {saveSearch,deleteSearch,clearSearch} from 'common/js/cache'
+import {saveSearch,deleteSearch,clearSearch,savePlay} from 'common/js/cache'
 
 
 function findIndex(list,song){
@@ -129,3 +129,7 @@ export const deleteSongList = function({commit}){
     commit(types.SET_PLAYING_STATE, false)
 }
 
+
+export const savePlayHistory = function({commit}, song){
+    commit(types.SET_PALY_HISTORY, savePlay(song))
+}

@@ -8,7 +8,7 @@
                 </div>
             </div>
             <div class="search-box-wrapper">
-                <search-box @query='onQueryChange' placeholder = '搜索歌曲' @listScroll = 'blurInput'></search-box>
+                <search-box @query='onQueryChange' placeholder = '搜索歌曲' @listScroll = 'blurInput' ref="searchBox"></search-box>
             </div>
             <div class="shortcut" v-show='!query'>
               <switches :switches='switches' 
@@ -16,9 +16,20 @@
                         @switch = 'switchItem'>
               </switches>
               <div class="list-wrapper">
-                  <scroll class='list-scroll' v-if='currentIndex === 0' :data='playHistory'> 
+                  <scroll ref='songList' class='list-scroll' v-if='currentIndex === 0' :data='playHistory'> 
                       <div class="list-inner">
                           <song-list :songs='playHistory' @select="selectSong"></song-list>
+                      </div>
+                  </scroll>
+                  <scroll class='list-scroll' 
+                          v-if='currentIndex === 1' 
+                          :data='searchHistory'
+                          ref="searchList">
+                      <div class="list-inner">
+                          <search-list @delete='deleteSearchHistory' 
+                                       @select='addQuery'
+                                       :searches='searchHistory'>
+                          </search-list>
                       </div>
                   </scroll>
               </div>
@@ -42,6 +53,7 @@ import scroll from 'base/srcoll/srcoll'
 import {mapGetters,mapActions} from 'vuex'
 import SongList from 'base/song-list/song-list'
 import Song from 'common/js/song'
+import SearchList from 'base/search-list/search-list'
 
 export default {
    mixins:[searchMixin],
@@ -65,6 +77,13 @@ export default {
    methods:{
        show(){
            this.showFlag = true
+           setTimeout(()=>{
+             if(this.currentIndex === 0){
+               this.$refs.songList.refresh()
+             }else{
+               this.$refs.SearchList.refresh()
+             }
+           })
        },
        hide(){
            this.showFlag = false
@@ -89,7 +108,8 @@ export default {
      suggest,
      switches,
      scroll,
-     SongList
+     SongList,
+     SearchList
    }
 
 }

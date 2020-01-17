@@ -1,26 +1,54 @@
 <template>
     <transition name="slide">
-        <div class="add-song">
+        <div class="add-song" v-show="showFlag" @click.stop>
             <div class="header">
                 <h1 class="title">添加歌曲到列表</h1>
-                <div class="close">
+                <div class="close" @click='hide'>
                     <i class='icon-close'></i>
                 </div>
             </div>
-            <div class="search-box-wrapper"></div>
-            <div class="shortcut"></div>
-            <div class="search-result"></div>
+            <div class="search-box-wrapper">
+                <search-box @query='onQueryChange' placeholder = '搜索歌曲' @listScroll = 'blurInput'></search-box>
+            </div>
+            <div class="shortcut" v-show='!query'>
+              
+            </div>
+            <div class= "search-result" v-show='query'>
+                 <suggest :query='query' :showSinger = 'showSinger' @select='selectSuggeset'></suggest>
+            </div>
         </div>
     </transition>
 </template>
 
 <script>
+import SearchBox from "base/search-box/search-box"
+import suggest from 'components/suggest/suggest'
+import {searchMixin} from 'common/js/mixin'
+
 export default {
+   mixins:[searchMixin],
    name:'',
    data() {
       return {
+          showFlag:false,
+          showSinger : false,
       }
    },
+   methods:{
+       show(){
+           this.showFlag = true
+       },
+       hide(){
+           this.showFlag = false
+       },
+       selectSuggeset(){
+         this.saveSearch()
+       }
+   },
+   components:{
+     SearchBox,
+     suggest
+   }
 
 }
 </script>

@@ -57,7 +57,7 @@ export const playerMixin = {
               return item.id === this.currentSong.id
             })
             this.setCurrentIndex(index)
-            this.setPlayingState(true)
+
         },        
         ...mapMutations({
             setPlayingState:'SET_PLAYING_STATE',
@@ -72,6 +72,7 @@ export const searchMixin = {
     data(){
         return {
             query:'',
+            refreshDelay:100
         }
     },
     computed:{

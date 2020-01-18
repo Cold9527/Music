@@ -9,7 +9,7 @@
                         <span class='clear' @click='showConfirm'><i class='icon-clear'></i></span>
                     </h1>
                 </div>
-                <srcoll ref = 'listcontent' class='list-content' :data='sequenceList'>
+                <srcoll :refreshDelay='refreshDelay' ref = 'listcontent' class='list-content' :data='sequenceList'>
                     <transition-group name='list' tag="ul">
                         <li class='item' 
                             v-for='(item, index) of sequenceList' 
@@ -56,7 +56,8 @@ export default {
    name:'',
    data() {
       return {
-        showFlag:false
+        showFlag:false,
+        refreshDelay :100
       }
    },
    computed:{

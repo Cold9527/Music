@@ -274,6 +274,7 @@ export default {
        loop(){
          this.$refs.audio.currentTime = 0
          this.$refs.audio.play()
+         this.setPlayingState(true)
          if(this.currentLyric){
            this.currentLyric.seek(0)
          }

@@ -1,4 +1,4 @@
-# music
+# music 效果图
 ![add image](https://github.com/Cold9527/Music/blob/master/src/img-storage/1.png)
 ![add image](https://github.com/Cold9527/Music/blob/master/src/img-storage/2.png)
 ![add image](https://github.com/Cold9527/Music/blob/master/src/img-storage/3.png)

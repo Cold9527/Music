@@ -8,6 +8,7 @@ import Singer from 'components/singer/singer.vue'
 import SingerDetail from 'components/singer-detail/singer-detail.vue'
 import Dsic from 'components/dsic/dsic.vue'
 import TopList from 'components/top-list/top-list.vue'
+import UserCenter from 'components/user-center/user-center.vue'
 
 Vue.use(VueRouter)
 
@@ -66,7 +67,12 @@ const routes = [
       }
     ]   
 
-  }     
+  },
+  {
+    path: '/user',
+    name:'UserCenter',
+    component:UserCenter
+  }    
 ]
 
 const router = new VueRouter({

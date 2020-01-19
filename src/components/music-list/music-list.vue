@@ -87,7 +87,7 @@ export default {
        selectItem(item, index){
             this.selectPlay({
                 list: this.songs,
-                index: index      
+                index    
             })    
        },
        random(){

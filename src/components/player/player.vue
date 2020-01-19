@@ -388,6 +388,7 @@ export default {
         this.$refs.lyricList.$el.style[transitionDuration] = `${time}ms` 
         this.$refs.middleL.style.opacity = opacity
         this.$refs.middleL.style[transitionDuration]= `${time}ms` 
+        this.touch.initiated = false
     
        },
        _pad(num, n = 2){
@@ -431,11 +432,12 @@ export default {
            }
            if(this.currentLyric){
               this.currentLyric.stop()
-              // this.currentTime = 0
-              // this.playingLyric = ''
-              // this.currentLineNum = 0   
+              this.currentTime = 0
+              this.playingLyric = ''
+              this.currentLineNum = 0   
            }
-           setTimeout(() => {
+           clearTimeout(this.timer)
+           this.timer = setTimeout(() => {
               this.$refs.audio.play();
               this.getLyric()
            },1000)
@@ -445,6 +447,13 @@ export default {
            this.$nextTick(()=>{
                newPlaying ? audio.play() : audio.pause();
            })          
+       },
+       fullScreen(newVal){
+         if(newVal){
+           setTimeout(()=>{
+             this.$refs.lyricList.refresh()
+           },20)
+         }
        }
    }
 

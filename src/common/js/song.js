@@ -43,7 +43,7 @@ export function createSong(musicData, vkey){
         image:`https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
         url: `http://aqqmusic.tc.qq.com/amobile.music.tc.qq.com/${vkey}`               
     })
-
+    
 }
 
 export function createDsic(DsicList, vkey){

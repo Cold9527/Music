@@ -29,7 +29,7 @@ export default {
        ])
    },
    created(){
-       this._getSongList()
+         this._getSongList()      
    },
    methods:{
        _getSongList(){

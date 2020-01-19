@@ -33,7 +33,7 @@ export default {
        ])
    },   
    created(){
-       this._getMusicList()
+        this._getMusicList()
    },
    methods:{
        _getMusicList(){

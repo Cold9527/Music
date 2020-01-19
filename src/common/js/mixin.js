@@ -36,13 +36,14 @@ export const playerMixin = {
             'sequenceList',
             'currentSong',
             'playlist',
-            'mode'
+            'mode',
+            'favoriteList'
          ])          
     },
     methods: {
         changeMode(){
             const mode = (this.mode + 1) % 3
-            this.setplaymode(mode) 
+            this.setPlayMode(mode) 
             let list = null
             if(mode === playMode.random){
                list = shunffle(this.sequenceList)
@@ -50,7 +51,7 @@ export const playerMixin = {
               list = this.sequenceList
             }
             this._resetCurrentIndex(list)
-            this.setplaylist(list)
+            this.setPlayList(list)
         },
         _resetCurrentIndex(list){
             let index = list.findIndex((item) => {
@@ -58,13 +59,36 @@ export const playerMixin = {
             })
             this.setCurrentIndex(index)
 
-        },        
+        },
+        toggleFavorite(song) {
+        if (this.isFavorite(song)) {
+            this.deleteFavoriteList(song)
+        } else {
+            this.saveFavoriteList(song)
+        }
+        },
+        getFavoriteIcon(song) {
+        if (this.isFavorite(song)) {
+            return 'icon-favorite'
+        }
+        return 'icon-not-favorite'
+        },
+        isFavorite(song){
+            const index = this.favoriteList.findIndex((item) =>{
+                return item.id === song.id;
+            })
+            return index  > -1 
+        },
         ...mapMutations({
             setPlayingState:'SET_PLAYING_STATE',
             setCurrentIndex: 'SET_CURRENT_INDEX',
-            setplaymode:'SET_PLAY_MODE',
-            setplaylist: 'SET_PLAY_LIST'
-        })        
+            setPlayMode:'SET_PLAY_MODE',
+            setPlayList: 'SET_PLAY_LIST'
+        }),  
+        ...mapActions([
+            'saveFavoriteList',
+            'deleteFavoriteList'
+        ])      
     }    
 }
 

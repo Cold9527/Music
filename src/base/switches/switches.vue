@@ -15,11 +15,13 @@ export default {
    name:'',
    props:{
        switches:{
-           type:Array,
-           default:[]
+          type:Array,
+          default:[]
        },
-       currentIndex:Number,
-       default:0
+       currentIndex:{
+          type: Number,
+          default:0
+       }
    },
    data() {
       return {

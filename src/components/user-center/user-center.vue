@@ -4,27 +4,74 @@
             <div class='back'>
                 <i class='icon-back'></i>
             </div>
-            <div class='swiches-wrapper'>
-
+            <div class='switches-wrapper'>
+                <switches @switch='switchItem' :switches='switches' :currentIndex='currentIndex'></switches>
             </div>
             <div class='play-btn' ref='playBtn'>
                 <i class='icon-play'></i>
                 <span class='text'>随机播放全部</span>
             </div>
             <div class='list-wrapper' ref='listWrapper'>
-
+                  <scroll ref='favoriteList' class='list-scroll' v-if='currentIndex === 0' :data='favoriteList'> 
+                      <div class="list-inner">
+                          <song-list :songs='favoriteList' @select="selectSong"></song-list>
+                      </div>
+                  </scroll>
+                  <scroll class='list-scroll' 
+                          v-if='currentIndex === 1' 
+                          :data='playHistory'
+                          ref="playList">
+                      <div class="list-inner">
+                          <song-list @select='selectSong' 
+                                     :songs='playHistory'>
+                          </song-list>
+                      </div>
+                  </scroll>
             </div>
         </div>
     </transition>
 </template>
 
 <script>
+import switches from 'base/switches/switches'
+import scroll from 'base/srcoll/srcoll'
+import {mapGetters,mapActions} from 'vuex'
+import Song from 'common/js/song'
+import SongList from 'base/song-list/song-list'
+
 export default {
    name:'',
    data() {
       return {
+        currentIndex:0,
+        switches:[
+          {name:'我喜欢的'},
+          {name:'最近听的'},
+        ]
       }
    },
+   computed:{
+     ...mapGetters([
+       'favoriteList',
+       'playHistory'
+     ])
+   },
+   methods:{
+     switchItem(index){
+       this.currentIndex = index
+     },
+     selectSong(song){
+       this.insertSong(new Song(song))
+     },
+     ...mapActions([
+       'insertSong'
+     ])
+   },
+   components:{
+     switches,
+     scroll,
+     SongList
+   }
 
 }
 </script>
@@ -50,7 +97,7 @@ export default {
       z-index: 50
       .icon-back
         display: block
-        padding: 10px
+        padding: 15px 10px 10px 10px
         font-size: $font-size-large-x
         color: $color-theme
     .switches-wrapper

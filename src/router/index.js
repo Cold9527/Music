@@ -20,30 +20,30 @@ const routes = [
   {
     path: '/rank',
     name: 'Rank',
-    component: Rank,
+    component:() => import(/* webpackChunkName: "about" */ 'components/rank/rank.vue'),
     children:[
       {
         path:':id',
-        component: TopList
+        component:() => import(/* webpackChunkName: "about" */ 'components/top-list/top-list.vue'),
       }
     ]
   },
   {
     path: '/recommend',
     name: 'Recommend',
-    component: Recommend,
+    component:() => import(/* webpackChunkName: "about" */ 'components/recommend/recommend.vue'),
     children: [
       {
         path:':id',
         name:'Dsic',
-        component:Dsic
+        component:() => import(/* webpackChunkName: "about" */ 'components/dsic/dsic.vue'),
       }
     ]
   },
   {
     path: '/search',
     name: 'Search',
-    component: Search,
+    component:() => import(/* webpackChunkName: "about" */ 'components/search/search.vue'),
     children:[
       {
         path: ':id',
@@ -58,12 +58,12 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component:Singer,
+    component:() => import(/* webpackChunkName: "about" */ 'components/singer/singer.vue'),
     children:[
       {
         path: ':id',
         name:'SingerDetail',
-        component:SingerDetail
+        component:() => import(/* webpackChunkName: "about" */ 'components/singer-detail/singer-detail.vue')
       }
     ]   
 
@@ -71,7 +71,7 @@ const routes = [
   {
     path: '/user',
     name:'UserCenter',
-    component:UserCenter
+    component:() => import(/* webpackChunkName: "about" */ 'components/user-center/user-center.vue'),
   }    
 ]
 
